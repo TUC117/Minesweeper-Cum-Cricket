@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Cricket Cum Minesweeper</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            border-spacing: 10px;
+            border-color: gold;
+            align-items: center;
+            justify-content: center;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        td,
+        th {
+            table-layout: 4cm;
+            width: 50px;
+            height: 50px;
+            justify-content: center;
+            text-align: center;
+            background-color: rgba(7, 65, 24, 0.91);
+            cursor: pointer;
+            padding: 10px;
+            border: 2px solid rgb(255, 255, 255);
+        }
+
+        .table-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 75 vh;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        td.spacing {
+            background-color: red;
+            /* Change the color of the spacing */
+        }
+
+        .typewriter {
+            font-family: Courier, monospace;
+            display: inline-block;
+        }
+
+        .score {
+            color: aliceblue;
+            margin-top: 10px;
+        }
+
+        .typewriter-text {
+            display: inline-block;
+            overflow: hidden;
+            letter-spacing: 2px;
+            animation: typing 5s steps(30, end), blink .75s step-end infinite;
+            white-space: nowrap;
+            font-size: 20px;
+            display: flex;
+            height: vh;
+            font-weight: 700;
+            border-right: 4px solid orange;
+            box-sizing: border-box;
+        }
+
+        @keyframes typing {
+            from {
+                width: 0%
+            }
+
+            to {
+                width: 100%
+            }
+        }
+
+        @keyframes blink {
+
+            from,
+            to {
+                border-color: transparent
+            }
+
+            50% {
+                border-color: orange;
+            }
+        }
+
+        body {
+            background-color: black;
+        }
+
+        .main {
+            background-color: black;
+
+            border: 5pt;
+            padding-top: 4cm;
+            padding-right: 4cm;
+            padding-left: 4cm;
+            padding-bottom: 4cm;
+            border-style: double;
+            border-color: rgb(0, 255, 0);
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="main">
+        <h1 style="color: aqua; font-family: cursive; font-size: 25pt;">CRICKET CUM FIELDERWEEPER<br</h1>
+                <p style="color: rgb(246, 255, 0); font-size: 25pt; text-align: center;font-weight: 1000;">Singleplayer
+                </p>
+
+                <div class="table-container">
+                    <table id="grid"></table>
+                </div>
+                <figure style="display: none;" id="fig">
+                    <img width="450" src="./wicket-laws-of-cricket.gif">
+                </figure>
+                <div class="typewriter">
+                    <div class="typewriter-text"
+                        style="font-size: 20pt; color: rgb(255, 81, 0); font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;">
+                        Beware of the hidden fielders</div>
+                </div>
+                <div id="presentscore" style="display: none; font-size: 17pt; color: green;"></div>
+                <div id="powerup" style="display: none; font-size: 30pt; color: gold;"></div>
+                <div id="score" style="color:aliceblue; font-size: 20pt;">Score: 0</div>
+                <div class="box" style="color: aqua;"><br>
+                    <button id="navigatebutton"
+                        style="font-weight: 900; padding: 6pt; color: rgb(0, 0, 0); cursor: pointer;border-color: rgb(255, 77, 0); font-size: 20pt; font-stretch:unset; border-radius: 0.4cm;border-width: 1mm;border-style:groove; ">Play
+                        Again</button>
+                </div>
+    </div>
+
+    <script>
+        let number = localStorage.getItem("number"); //we are extracting the number from the local storage
+        // Number of rows and columns
+        const numRows = number;
+        const numCols = number;
+        // Number of fileders
+        const numFielders = 11;
+        let endg = 0;
+        let grid = document.getElementById('grid');
+        let score = 0;
+        let gameEnded = false;
+        let scoreElement = document.getElementById('score');
+        const navigateButton = document.getElementById('navigatebutton');
+        navigateButton.addEventListener('click', Restart);
+
+        // Generate the grid
+        for (let i = 0; i < numRows; i++) {
+            let row = document.createElement('tr');
+            grid.appendChild(row);
+
+            for (let j = 0; j < numCols; j++) {
+                let cell = document.createElement('td');
+                cell.dataset.row = i;
+                cell.dataset.col = j;
+                cell.addEventListener('click', handleCellClick);
+                row.appendChild(cell);
+            }
+        }
+
+        // Randomly place Fielders on the grid
+        for (let i = 0; i < numFielders; i++) {
+            let randomRow = Math.floor(Math.random() * numRows);
+            let randomCol = Math.floor(Math.random() * numCols);
+            let cell = grid.rows[randomRow].cells[randomCol];
+            cell.dataset.hasMine = 'true';
+        }
+        // Handle cell click event
+        function handleCellClick(event) {
+            let cell = event.target;
+            endg++;
+            //we are accessing the clicked cell event using event.target
+            if (gameEnded) {
+                return;
+            }
+
+            if (cell.dataset.hasMine) {
+                document.getElementById("presentscore").textContent = "You are out !!";
+                cell.style.backgroundColor = 'red';
+                let p = document.getElementById("powerup");
+                p.style.display = "none";
+                endGame();
+            } else {
+                
+                let s = document.getElementById("presentscore");
+                s.style.display = "block";
+                // Assinging a random score from 0 to 6 except 5
+                var randomnumber = Math.floor(Math.random() * 7);
+                while (randomnumber == 5) { randomnumber = Math.floor(Math.random() * 7); }
+                score += randomnumber;
+                document.getElementById("presentscore").textContent = "Score for this ball is: " + randomnumber; //displaying the score of current ball
+                let index = number * number;
+                var powerupnumber = Math.floor(Math.random() * index); // generating a variable number for powerup
+                if (powerupnumber % 10 == 7) { // i have done some random mathematics so that the player can a powerup by luck :)
+                    cell.style.backgroundColor = 'brown';
+                    cell.textContent = randomnumber;
+                    let p = document.getElementById("powerup");
+                    p.style.display = "block";
+                    document.getElementById("powerup").textContent = "YOU GOT A POWER UP !!! Your score will be doubled";
+                    score = score * 2; // doubling the score
+                    cell.removeEventListener('click', handleCellClick);
+                    scoreElement.textContent = 'Score: ' + score;
+                }
+
+                else { // normal condition which applies on general case
+                    let p = document.getElementById("powerup");
+                    p.style.display = "none"; // we are stoping the display of power up if it is activated
+
+                    cell.textContent = randomnumber;
+                    cell.removeEventListener('click', handleCellClick);
+
+                    scoreElement.textContent = 'Score: ' + score;
+                }
+
+            }
+        }
+        // End the game
+        function endGame() {
+            // we are ending the game 
+            gameEnded = true;
+            let cleanet = document.getElementsByClassName("table-container");
+            cleanet[0].style.display = "none";
+            let out = document.getElementById("fig");
+            out.style.display = "block";
+            if ((numRows*numCols-endg) == 11){
+                alert ("YOU ARE ON OF THE RAREST WINNERS!!");
+            }
+        }
+        //Restart game
+        function Restart() {
+            // restart function
+            location.reload();
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,298 @@
+% LaTeX Template for short student reports.
+% Citations should be in bibtex format and go in references.bib
+\documentclass[a4paper, 11pt]{article}
+\usepackage[top=3cm, bottom=3cm, left=2cm, right=2cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage{textcomp}
+\usepackage{graphicx}
+\usepackage{amsmath, amssymb}
+\usepackage{bm}
+\usepackage[pdftex, bookmarks, colorlinks, breaklinks]{hyperref}
+\usepackage{memhfixc}
+\usepackage{pdfsync}
+\usepackage{fancyhdr}
+\usepackage{subcaption}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{verbatim}
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{CS 104 Project}
+\lhead{Trasula Umesh Karthikeya}
+\rfoot{\thepage}
+
+\title{CS 104 Project}
+\author{Trasula Umesh Karthikeya}
+
+\lstset{
+    language=JavaScript,
+    basicstyle=\ttfamily,
+    keywordstyle=\color{blue},
+    commentstyle=\color{green!60!black},
+    stringstyle=\color{red},
+    numbers=left,
+    numberstyle=\tiny,
+    breaklines=true,
+    showstringspaces=false
+}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\pagebreak
+
+\section{Introduction}
+My project was about creating an online Cricket Cum Minesweeper game\ldots
+I developed a few HTML pages to make this possible\ldots
+The main results were \ldots
+
+\section{Background}
+I went through some online code to understand how a Minesweeper game works, CSS styles, JS code format, etc. \\
+I made modifications to some of the codes and observed the changes in the output. I also used ChatGPT to debug errors and understand parts of other codes that I found challenging.
+
+\section{Game Design}
+\subsection{Main Page}
+The main page looks like Figure \ref{fig:main-page}.
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.35]{main.png}
+    \caption{Main Page}
+    \label{fig:main-page}
+\end{figure}
+
+It contains:
+\begin{itemize}
+    \item A box to input the size of the grid.
+    \item Checkbox 1: Singleplayer
+    \item Checkbox 2: Multiplayer
+    \item Start Game Button
+\end{itemize}
+
+\subsection{Singleplayer Page}
+The singleplayer page looks like Figure \ref{fig:singleplayer-page}.
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.35]{Singleplayer.png}
+    \caption{Singleplayer Page}
+    \label{fig:singleplayer-page}
+\end{figure}
+
+In the singleplayer game:
+\begin{itemize}
+    \item 11 fielders are arranged hidden.
+    \item Clicking on the grids reveals your score on that grid. You can continue the game until you click on a grid with a fielder.
+    \item You may receive power-ups that double your current score if you are lucky.
+\end{itemize}
+
+\subsection{Multiplayer Page}
+The multiplayer game consists of two pages shown in Figure \ref{fig:multiplayer-pages}.
+
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}[b]{0.5\textwidth}
+        \includegraphics[width=\textwidth]{mul1.png}
+        \caption{Multiplayer Page 1}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.4\textwidth}
+        \includegraphics[width=\textwidth]{MUL 2.png}
+        \caption{Multiplayer Page 2}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.4\textwidth}
+        \includegraphics[width=\textwidth]{MUL3.png}
+        \caption{Multiplayer Page 3}
+    \end{subfigure}
+    \caption{Multiplayer Pages}
+    \label{fig:multiplayer-pages}
+\end{figure}
+\pagebreak
+\subsection{OUTs and Powerups}
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}[b]{0.5\textwidth}
+        \includegraphics[width=\textwidth]{out.png}
+        \caption{OUT}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.4\textwidth}
+        \includegraphics[width=\textwidth]{Powerups.png}
+        \caption{PowerUP}
+    \end{subfigure}
+        \caption{Multiplayer Pages}
+    \label{fig:OUTs and Powerups}
+\end{figure}
+
+\section{Implementation}
+\subsection{Single player}
+    In the single player game I have created a grid and arranged 11 players randomly in \textit{n*n} using \textit{Math.random()} function.\\ \\
+    \textbf{I have used the following functions:} 
+    \begin{itemize}
+        \item \textbf{handleCellClick()} \\ Using this function we can handle any grid using a mouse click. It has two \textit{3 if-else} conditions. \\ One for \textit{if clicked grid has a mine} (Game will be ended by calling \textit{endGame()} function). \\ Second one checks weather game is ended or not using a bool variable \textit{gameEnded}. \\ Third one is for the powerup. I have created a random number less than \textit{n*n} and divided it by 10 and then compared the remainder with 7. If this is true then you will get a powerup. I have done this operation to as a random operation as we need to assign a random grid for power up.\\And score is also generated in this function score can be from 0 to 6 except 5. I have exculded 5 by using a while function \textit{"while (randomnumber == 5){randomnumber = Math.floor(Math.random() * 7);"}}\\
+        And there will be variable called \textit{Score} which calculate the final score by adding the individual scores of each grid and also Doubling when it got a powerup. Individual scores of each grid will be visible on that particular grid by using \textit{cell.textContent = randomnumber;} here \textit{randomnumber} is the present score for the ball.
+        \item \textbf{endGame()}
+        \\ It will assign the \textit{bool gameEnded} as true. It will clear the grid by using \\ \textit{    let cleanet = document.getElementsByClassName("table-container"); \\cleanet[0].style.display = "none";}\\
+        I have displayed the umpire gif by using \\ \textit{let out = document.getElementById("fig");\\out.style.display = "block";}
+        \\ It will have an if cond. containing the variable \textit{endg} (Used as a short cut for endgame) it is number of times you have clicked the grid if \textit{"(n*n - endg)"} is equal to 11 then the player who played the will be declared as the winner in this \textit{Singleplayer Game}. 
+        \item \textbf{Restart()}
+        \\ This function will be actived by clicking \textbf{Play Again} button in Singlplayer page. \\ This function reset the game by using \textit{location.reload();} which reloads the current web page.
+        \item For more information refer \cite{latex3}, \cite{latex4}
+
+    \end{itemize}
+    \subsection{Multi-Player}
+    For the implementation of Multiplayer game I have used two html pages \textit{Multiplayer.html} and \textit{supmul.html} (short name as support for Multiplayer).\\\\ \textbf{Multiplayer.html} have the following features:\\
+    \begin{itemize}
+        \item  This page will have two arrays which will be used later one for player names and other for player scores (all the scores were assigned to zero).
+        \item  This page will have a box that takes number of players (greater than 1) as input and then their names and stores them in the array playernames.
+        \item Now this page will store: \\ 
+        
+        \begin{tabular}{|c|c|}
+        \hline
+        \textbf{Variable} & \textbf{How it is stored in Browser's local storage} \\
+        \hline
+        \textit{playerscores} & localStorage.setItem("playerscores", JSON.stringify(playerscores)); \\ \hline
+        \textit{playernames} & localStorage.setItem("playernames", JSON.stringify(playernames));\\ \hline
+        \textit{number} & localStorage.setItem("number", number); \\ \hline
+        \textit{numplayers} & localStorage.setItem("numplayers", numplayers);\\ \hline
+        \textit{numtimes} & localStorage.setItem("numtimes", numtimes);\\
+        \hline 
+        \end{tabular}
+    \end{itemize}
+\pagebreak
+
+
+   \textbf{supmul.html} will work based on the following functions and strategies:
+    \begin{itemize}
+        \item First we will use the following to obatin the respective variable:\\
+    \begin{tabular}{|c|c|}
+        \hline
+        \textbf{Variable} & \textbf{How it is stored in Browser's local storage} \\
+        \hline
+        \textit{playerscores} & JSON.parse(localStorage.getItem("playerscores")); \\ \hline
+        \textit{playernames} & JSON.parse(localStorage.getItem("playernames"));\\ \hline
+        \textit{number} & localStorage.getItem("number"); \\ \hline
+        \textit{numplayers} & localStorage.getItem("numplayers");\\ \hline
+        \textit{numtimes} & localStorage.getItem("numtimes");\\
+        \hline 
+        \end{tabular}
+        \item My Strategy in this multiplayer is :
+          \begin{itemize}
+              \item Calling this page recursively by number of players times
+               \item Each time when the page is called it updates the array \textit{playerscores} by pusing the score of the each player by using \textit{playerscores.push(score);}.
+                \item Then when then final player clicks the continue button the grid and some extra elements will be disappeard from the screen. And scoreboard will be visualised.
+                \item \textit{Scoreboard} will show the players names and their respective scores. It will also show the winner name \textit{Player with maximum score}. 
+                \item If any of the two players have same score then it will show \textit{There is a tie } and the player names.
+          \end{itemize}
+        \item Function used in this page are :
+            \begin{itemize}
+                \item \textit{handleCellClick(event)}
+                \item \textit{endGame()}
+                \item \textit{showscores()}
+                \item \textit{Restart()}
+                \item \textit{createagain()}
+            \end{itemize}
+        \item function \textit{handleCellClick(event);}
+        \\ This is the same function that we have used in the case of \textbf{Single-Player}.
+        \item funtion \textit{endgame();}
+        \begin{lstlisting}
+            gameEnded = true;
+            let cleanet = document.getElementsByClassName("table-container");
+            cleanet[0].style.display = "none";
+            let out = document.getElementById("fig");
+            out.style.display = "block";
+            playerscores.push(score);
+            numtimes++;
+        \end{lstlisting}
+         The function is same as that in Single-Player but only difference is it also counts numtimes the game played by increasing the variable \textit{numtimes} by one.
+        \item function \textit{Restart()} 
+           \\ This will have a slighter difference with the function in Single Player.
+
+            \begin{lstlisting}
+                if (numtimes == numplayers) {
+                showscores();
+            }
+            else {
+                localStorage.setItem("playerscores", JSON.stringify(playerscores));
+                localStorage.setItem("playernames", JSON.stringify(playernames));
+                localStorage.setItem("number", number);
+                localStorage.setItem("numplayers", numplayers);
+                localStorage.setItem("numtimes", numtimes);
+                window.location.href = "supmul.html";
+            }
+        }
+            \end{lstlisting}
+            This will show the \textbf{Score board} by comparing numtimes with numplayers or else it will update the array \textit{playerscores}. 
+          
+        \item function \textit{showscores()}
+          \begin{itemize}
+              \item Intially this will remove the \textit{grid, type-writer, buttons, etc.} and \textit{Scoreboard, Playernames, Playerscores, winner}
+              \item We will find the index of maximum score by 
+              \begin{lstlisting}
+                  let maxnumber = -Infinity;
+            let maindex = -1;
+            for (let i = 0; i < playerscores.length; i++) {
+                if (playerscores[i] > maxnumber) {
+                    maxnumber = playerscores[i];
+                    maindex = i;
+                }
+            }
+              \end{lstlisting}
+              \item Now if any two player score the same maximum score then a tie will be given to them or else the player who scores maximum will be declared as winner.
+              \begin{lstlisting}
+                              let j = 0;
+            let equal = [];
+            equal.push(maindex);
+            for (j; j < playerscores.length; j++) {
+                if (playerscores[maindex] == playerscores[j] && j != maindex) {
+                    equal.push(j);
+                }
+            }
+            if (equal.length == 1) {
+                let winner = playernames[maindex];
+                document.getElementById("output3").innerHTML = "The Winner in the game is " + winner;
+            }
+            else {
+                let ties = [];
+                for (let z = 0; z < equal.length; z++) {
+                    ties.push(playernames[equal[z]]);
+                }
+                document.getElementById("output3").innerHTML = "There is tie between " + ties;
+            }
+        }
+              \end{lstlisting}
+              \item In the above code I have declared a variable j, array equal. 
+              \item Then it will check score of the player with \textit{maindex} with other indices and if there any the index of that score will be noted in array \textit{equal}. And name of the players will be noted in array \textit{ties}.
+              
+          \end{itemize}
+        \item Function \textit{createagain()}
+        \\ This will create the grid again and this function will be activated when clicked on \textit{Continue} button.\\ The code is as follows:
+        \begin{lstlisting}
+                        for (let i = 0; i < numRows; i++) {
+                let row = document.createElement('tr');
+                grid.appendChild(row);
+
+                for (let j = 0; j < numCols; j++) {
+                    let cell = document.createElement('td');
+                    cell.dataset.row = i;
+                    cell.dataset.col = j;
+                    cell.addEventListener('click', handleCellClick);
+                    row.appendChild(cell);
+                }
+            }
+
+            // Randomly place Fielders on the grid
+            for (let i = 0; i < numfielder; i++) {
+                let randomRow = Math.floor(Math.random() * numRows);
+                let randomCol = Math.floor(Math.random() * numCols);
+                let cell = grid.rows[randomRow].cells[randomCol];
+                cell.dataset.hasMine = 'true';
+            }
+        \end{lstlisting}
+        \item For more information refer \cite{latex2}
+
+    \end{itemize}
+    I have used \cite{latex1} for debugging.
+    \pagebreak
+\bibliographystyle{plain}
+\bibliography{report}
+\end{document}

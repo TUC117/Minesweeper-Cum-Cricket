@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>The Minesweepcricketer</title>
+  <style>
+    .container {
+      margin-top: 50px;
+      text-align: center;
+    }
+
+    .h {
+      text-align: center;
+      justify-content: center;
+
+    }
+
+    .container input[type="checkbox"] {
+      transform: scale(2.0);
+      justify-content: center;
+      align-items: center;
+    }
+
+    #numberInput {
+      width: 70px;
+      height: 40px;
+      font-size: 24px;
+    }
+
+    body {
+      background-color: black;
+      margin: 3in;
+      border-style: double;
+      border-width: 4pt;
+      border-color: rgb(9, 255, 0);
+
+      padding-top: 2cm;
+      padding-right: 2cm;
+      padding-left: 2cm;
+      padding-bottom: 2cm;
+    }
+
+    .image-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .image-container img {
+      height: 10cm;
+      width: 10cm;
+      align-content: center;
+
+    }
+  </style>
+</head>
+
+<body>
+  <h1 style="font-size: 30pt; font-style: initial; font-weight: 800; font-family: cursive ;
+    color: rgb(255, 255, 255); text-align: center;">
+    Welcome to the areana of the minesweeper cum cricket game <br>
+  </h1>
+  <p style="color:rgb(255, 0, 170); font-weight: 70; font-variant: normal; font-stretch: initial; font-size: 25pt; font-style:unset; font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    text-align: center;"> Here you can choose the grid of the pitch on which you wanted to play enter the number in
+    grid <br></p>
+  <div class="container">
+    <label for="numberInput"
+      style="color: rgba(0, 255, 247, 0.689); font-size: 24pt;font-weight: 700; border-radius: 10pt; width: 2pt; height: 2pt; padding-right: 15px;">Number
+      of rows or columns:</label>
+    <input type="number" id="numberInput" min="0">
+    <br><br>
+    <input type="checkbox" id="checkbox1" style="font-size: 30pt; color: chocolate; cursor: pointer;">
+    <label for="checkbox1"
+      style="font-size: 35pt; color: rgb(236, 245, 0); cursor: pointer; padding-left: 15px;">SINGLEPLAYER</label>
+    <br><br>
+    <input type="checkbox" id="checkbox2">
+    <label for="checkbox2"
+      style="font-size: 35pt; color: rgb(226, 8, 1); cursor: pointer; font-style: bold; padding-left: 15px;">MULTIPLAYER</label>
+    <br><br>
+    <button onclick="openNewPages()"
+      style="padding: 10pt; font-size: 20pt; font-weight: 600; color: rgb(0, 0, 0); background-color:rgb(16, 218, 218); cursor: pointer; border-radius: 1in; border-style:double; border-width: 0.1in;">Start
+      Game</button>
+  </div>
+  <br>
+  <div class="image-container">
+    <img src="qualifier-playoffs.gif" alt="Image 1" style="padding-left: 1.5in; image-resolution: 100;">
+    <img src="cricket-game-game.gif" alt="Image 2">
+  </div>
+  <script>
+    function openNewPages() {
+      var number = document.getElementById("numberInput").value;
+      var checkbox1 = document.getElementById("checkbox1");
+      var checkbox2 = document.getElementById("checkbox2");
+
+      if (number > 3) { //checking that atleast 11 player can be fit in the field so we need number >=4
+        if (checkbox1.checked) { //If first checkbox is checked i.e., SINGLEPLAYER
+          localStorage.setItem("number", number);
+          //here we are storing the value of the 'number' variable in the name of number so that we can use this number to print n sized grid
+          window.location.href = "Singleplayer.html";
+          //As the Singleplayer.html is in the same directory we can change the URL of the webpage to Singleplayer.html. i.e., we are navigating to Singleplayer.html
+        }
+
+        if (checkbox2.checked) { //If second checkbox is checked i.e., MULTIPLAYER
+          localStorage.setItem("number", number);
+          //here we are storing the value of the 'number' variable in the name of number so that we can use this number to print n sized grid
+          window.location.href = "Multiplayer.html";
+          //As the Multiplayer.html is in the same directory we can change the URL of the webpage to Multiplayer.html. i.e., we are navigating to Multiplayer.html
+        }
+      } else {
+        alert("Please enter a number greater than 3!");
+      }
+    }
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Cricket Cum Fieldersweeper</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            border-spacing: 10px;
+            border-color: gold;
+            align-items: center;
+            justify-content: center;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        td,
+        th {
+            table-layout: 4cm;
+            width: 50px;
+            height: 50px;
+            justify-content: center;
+            text-align: center;
+            background-color: rgba(7, 65, 24, 0.91);
+            cursor: pointer;
+            padding: 10px;
+            border: 2px solid rgb(255, 255, 255);
+        }
+
+        .table-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 75 vh;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        td.spacing {
+            background-color: red;
+            /* Change the color of the spacing */
+        }
+
+        .typewriter {
+            font-family: Courier, monospace;
+            display: inline-block;
+        }
+
+        .score {
+            color: aliceblue;
+            margin-top: 10px;
+        }
+
+        .typewriter-text {
+            display: inline-block;
+            overflow: hidden;
+            letter-spacing: 2px;
+            animation: typing 5s steps(30, end), blink .75s step-end infinite;
+            white-space: nowrap;
+            font-size: 20px;
+            display: flex;
+            height: vh;
+            font-weight: 700;
+            border-right: 4px solid orange;
+            box-sizing: border-box;
+        }
+
+        @keyframes typing {
+            from {
+                width: 0%
+            }
+
+            to {
+                width: 100%
+            }
+        }
+
+        @keyframes blink {
+
+            from,
+            to {
+                border-color: transparent
+            }
+
+            50% {
+                border-color: orange;
+            }
+        }
+
+        .main {
+            background-color: black;
+            border: 5pt;
+            padding-top: 20pt;
+            padding-right: 350pt;
+            padding-left: 350pt;
+            padding-bottom: 20pt;
+            border-style: double;
+            border-color: rgb(255, 55, 0);
+        }
+    </style>
+
+</head>
+
+<body style="background-color: black;">
+    <div class="main">
+        <h1 style="color: rgb(0, 251, 255); font-family: cursive; font-size: 25pt;">CRICKET CUM FIELDERWEEPER<br< /h1>
+                <p style="color: rgb(48, 255, 44); font-size: 30pt;font-weight: 1000; text-align: center;">MULTIPLAYER </p>
+                <p id="player1" style="color: rgb(64, 102, 255); font-size: 25pt;">Current PLayer:</p>
+                <div id="player" style="color:aliceblue; font-size: 30pt;"></div>
+                <br>
+                <div class="table-container">
+                    <table id="grid"></table>
+                </div>
+                <figure style="display: none;" id="fig">
+                    <img width="400" src="./wicket-laws-of-cricket.gif">
+                </figure>
+
+                <div class="show" style="display: none;">
+                    <p style="color:yellow; font-size: 30pt;"> SCORE BOARD </p><br>
+
+                </div>
+                <p id="output1" style="color:rgb(255, 200, 0); font-size: 25pt; font-weight: 300;"></p>
+                <p id="output2" style="color:rgb(0, 255, 134,00.440pt); font-size: 25pt; font-weight: 300;"></p>
+                <div id="output3" style="color:rgb(255, 0, 0); font-size: 40pt;"></div>
+                <div class="typewriter">
+                    <div class="typewriter-text"
+                        style="font-size: 20pt; color: rgb(217, 255, 0); font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;">
+                        Beware of the hidden fielders</div>
+                </div><br>
+                <div id="presentscore" style="display: none; font-size: 17pt; color: green;"></div>
+                <div id="powerup" style="display: none; font-size: 30pt; color: gold;"></div>
+                <div id="score" style="color:aliceblue; font-size: 20pt;">Score: 0</div><br>
+                <div class="box" style="color: aqua;">
+                    <button id="navigatebutton"
+                        style="background-color: black;font-weight: 900; padding: 6pt; color: rgb(255, 255, 255); cursor: pointer; font-size: 20pt;border-radius: 0.440pt;border-style: double;border-color: crimson; font-stretch:unset;">Continue</button>
+                </div>
+    </div>
+    <script>
+        /*
+            1. This page is support page for html here we have the main code.
+            2. This page will be changing it's URL with the new grid and stored data (numplayers, updated score).
+            3. 'numtimes' is the number of times the is called (number of players have completed the game).
+            4. Here when the first player finishes his game after he cilcks in Continue button then the same page with updated numscores will be opened.
+            5. This part will be repeated by till all the players have completed their turn.
+            6. Then finally all the contents will be disappered when the last player clicks continue.
+            7. Then score board will be appeared showing the names and their respective scores.
+            8. Player with the Highest score will be declared as the WINNER of the game.
+        */
+        let playerscores = JSON.parse(localStorage.getItem("playerscores"));
+        let playernames = JSON.parse(localStorage.getItem("playernames"));
+        let number = localStorage.getItem("number");
+        let numplayers = localStorage.getItem("numplayers");
+        let numtimes = localStorage.getItem("numtimes");
+        // Number of rows and columns
+        const numRows = number;
+        const numCols = number;
+
+        // Number of Fielders
+        const numfielder = 11;
+
+        let grid = document.getElementById('grid');
+        let score = 0;
+        let gameEnded = false;
+        let scoreElement = document.getElementById('score');
+        const navigateButton = document.getElementById('navigatebutton');
+        navigateButton.addEventListener('click', Restart);
+        // Generate the grid
+        for (let i = 0; i < numRows; i++) {
+            let row = document.createElement('tr');
+            grid.appendChild(row);
+
+            for (let j = 0; j < numCols; j++) {
+                let cell = document.createElement('td');
+                cell.dataset.row = i;
+                cell.dataset.col = j;
+                cell.addEventListener('click', handleCellClick);
+                row.appendChild(cell);
+            }
+        }
+
+        // Randomly place Fielders on the grid
+        for (let i = 0; i < numfielder; i++) {
+            let randomRow = Math.floor(Math.random() * numRows);
+            let randomCol = Math.floor(Math.random() * numCols);
+            let cell = grid.rows[randomRow].cells[randomCol];
+            cell.dataset.hasMine = 'true';
+        }
+        var selectedName = playernames[numtimes];
+        document.getElementById("player").innerHTML = selectedName
+
+        // Handle cell click event
+        function createagain() {
+            for (let i = 0; i < numRows; i++) {
+                let row = document.createElement('tr');
+                grid.appendChild(row);
+
+                for (let j = 0; j < numCols; j++) {
+                    let cell = document.createElement('td');
+                    cell.dataset.row = i;
+                    cell.dataset.col = j;
+                    cell.addEventListener('click', handleCellClick);
+                    row.appendChild(cell);
+                }
+            }
+
+            // Randomly place Fielders on the grid
+            for (let i = 0; i < numfielder; i++) {
+                let randomRow = Math.floor(Math.random() * numRows);
+                let randomCol = Math.floor(Math.random() * numCols);
+                let cell = grid.rows[randomRow].cells[randomCol];
+                cell.dataset.hasMine = 'true';
+            }
+        }
+        function handleCellClick(event) {
+            let cell = event.target;
+
+            if (gameEnded) {
+                return;
+            }
+
+            if (cell.dataset.hasMine) {
+                document.getElementById("presentscore").textContent = "You are out !!";
+                cell.style.backgroundColor = 'red';
+                let p = document.getElementById("powerup");
+                p.style.display = "none";
+                endGame();
+            } else {
+
+                let s = document.getElementById("presentscore");
+                s.style.display = "block";
+                var randomnumber = Math.floor(Math.random() * 7);
+                while (randomnumber == 5) { randomnumber = Math.floor(Math.random() * 7); }
+                score += randomnumber;
+                document.getElementById("presentscore").textContent = "Score for this ball is: " + randomnumber;
+                let index = number * number;
+                var powerupnumber = Math.floor(Math.random() * index);
+                if (powerupnumber % 10 == 7) {
+                    cell.style.backgroundColor = 'brown';
+                    cell.textContent = randomnumber;
+                    let p = document.getElementById("powerup");
+                    p.style.display = "block";
+                    document.getElementById("powerup").textContent = "YOU GOT A POWER UP !!! Your score will be doubled";
+                    score = score * 2;
+                    cell.removeEventListener('click', handleCellClick);
+                    scoreElement.textContent = 'Score: ' + score;
+                }
+                else {
+                    let p = document.getElementById("powerup");
+                    p.style.display = "none";
+                    cell.textContent = randomnumber;
+                    cell.removeEventListener('click', handleCellClick);
+                    scoreElement.textContent = 'Score: ' + score;
+                }
+
+            }
+        }
+        // End the game
+        function endGame() {
+            gameEnded = true;
+            let cleanet = document.getElementsByClassName("table-container");
+            cleanet[0].style.display = "none";
+            let out = document.getElementById("fig");
+            out.style.display = "block";
+            playerscores.push(score);
+            numtimes++;
+        }
+        function showscores() {
+
+            let table = document.getElementsByClassName("table-container");
+            let intro = document.getElementsByClassName("typewriter");
+            let bucon = document.getElementsByClassName("box");
+            let score = document.getElementById("score");
+            let plyers = document.getElementById("player");
+            let plyers1 = document.getElementById("player1");
+            let out = document.getElementById("presentscore");
+
+            let out1 = document.getElementById("fig");
+            out1.style.display = "none";
+            plyers.style.display = "none";
+            plyers1.style.display = "none";
+            table[0].style.display = "none";
+            intro[0].style.display = "none";
+            bucon[0].style.display = "none";
+            out.style.display = "none";
+            score.style.display = "none";
+            let shows = document.getElementsByClassName("show");
+            shows[0].style.display = "block";
+
+            document.getElementById("output1").textContent = "The Players in the game are: " + playernames;
+            document.getElementById("output2").textContent = "Their respective scores are: " + playerscores;
+            let maxnumber = -Infinity;
+            let maindex = -1;
+            for (let i = 0; i < playerscores.length; i++) {
+                if (playerscores[i] > maxnumber) {
+                    maxnumber = playerscores[i];
+                    maindex = i;
+                }
+            }
+            let j = 0;
+            let equal = [];
+            equal.push(maindex);
+            for (j; j < playerscores.length; j++) {
+                if (playerscores[maindex] == playerscores[j] && j != maindex) {
+                    equal.push(j);
+                }
+            }
+            if (equal.length == 1) {
+                let winner = playernames[maindex];
+                document.getElementById("output3").innerHTML = "The Winner in the game is " + winner;
+            }
+            else {
+                let ties = [];
+                for (let z = 0; z < equal.length; z++) {
+                    ties.push(playernames[equal[z]]);
+                }
+                document.getElementById("output3").innerHTML = "There is tie between " + ties;
+            }
+        }
+        //Restart game//
+        function Restart() {
+            if (numtimes == numplayers) {
+                showscores();
+            }
+            else {
+                localStorage.setItem("playerscores", JSON.stringify(playerscores));
+                localStorage.setItem("playernames", JSON.stringify(playernames));
+                localStorage.setItem("number", number);
+                localStorage.setItem("numplayers", numplayers);
+                localStorage.setItem("numtimes", numtimes);
+                window.location.href = "supmul.html";
+            }
+        }
+    </script>
+</body>
+
+</html>
